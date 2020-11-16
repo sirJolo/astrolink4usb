@@ -1,0 +1,13 @@
+Before compiling AstroLink4 USB driver install libindi-dev
+# sudo apt-get install libindi-dev
+
+Compile AstroLink4 USB driver
+# git clone https://github.com/astrojolo/indi-astrolink4usb
+# cd indi-astrolink4usb
+# mkdir build
+# cd build
+# cmake ..
+# make
+# make install
+
+DONE

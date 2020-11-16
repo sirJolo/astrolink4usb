@@ -1,0 +1,11 @@
+AUTHORS
+INSTALL
+README.md
+astrolink4usb.xml
+build/CMakeFiles/3.10.2/CompilerIdC/CMakeCCompilerId.c
+build/CMakeFiles/3.10.2/CompilerIdCXX/CMakeCXXCompilerId.cpp
+build/CMakeFiles/feature_tests.c
+build/CMakeFiles/feature_tests.cxx
+indi_astrolink4usb.cpp
+indi_astrolink4usb.h
+indi_astrolink4usb.xml
