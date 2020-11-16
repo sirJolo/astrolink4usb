@@ -133,7 +133,8 @@ bool IndiAstrolink4USB::initProperties()
 
     IUFillSwitch(&FocuserModeS[FS_MODE_UNI], "FS_MODE_UNI", "Unipolar", ISS_ON);
     IUFillSwitch(&FocuserModeS[FS_MODE_BI], "FS_MODE_BI", "Bipolar", ISS_OFF);
-    IUFillSwitch(&FocuserModeS[FS_MODE_MICRO], "FS_MODE_MICRO", "Microstep", ISS_OFF);
+    IUFillSwitch(&FocuserModeS[FS_MODE_MICRO_L], "FS_MODE_MICRO_L", "Microstep 1/8", ISS_OFF);
+    IUFillSwitch(&FocuserModeS[FS_MODE_MICRO_H], "FS_MODE_MICRO_H", "Microstep 1/32", ISS_OFF);
     IUFillSwitchVector(&FocuserModeSP, FocuserModeS, 3, getDeviceName(), "FOCUSER_MODE", "Focuser mode", SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
 
     IUFillSwitch(&FocuserCompModeS[FS_COMP_AUTO], "FS_COMP_AUTO", "AUTO", ISS_OFF);
@@ -220,9 +221,16 @@ bool IndiAstrolink4USB::initProperties()
     addParameter("WEATHER_DEWPOINT", "Dew Point (C)", 0, 100, 15);
     
     // Sensor 2
-    IUFillNumber(&Sensor2N[0], "TEMP_2", "Temperature (C)", "%.1f", -50, 100, 1, 0);
-    IUFillNumberVector(&Sensor2NP, Sensor2N, 1, getDeviceName(), "SENSOR_2", "Sensor 2", ENVIRONMENT_TAB, IP_RO, 60, IPS_IDLE);
-    
+    IUFillNumber(&Sensor2N[SENS_T], "TEMP_2", "Temperature (C)", "%.1f", -50, 100, 1, 0);
+    IUFillNumber(&Sensor2N[SENS_H], "HUM_2", "Humidity (%)", "%.1f", -50, 100, 1, 0);
+    IUFillNumber(&Sensor2N[SENS_D], "DEW_2", "Dew point (C)", "%.1f", -50, 100, 1, 0);
+    IUFillNumberVector(&Sensor2NP, Sensor2N, 3, getDeviceName(), "SENSOR_2", "Sensor 2", ENVIRONMENT_TAB, IP_RO, 60, IPS_IDLE);
+
+    // Sky Sensor
+    IUFillNumber(&SensorSkyN[SENSSKY_T], "SKY_TEMP", "Sky temperature (C)", "%.1f", -50, 100, 1, 0);
+    IUFillNumber(&SensorSkyN[SENSSKY_A], "SKY_AMB", "Ambient temperature (%)", "%.1f", -50, 100, 1, 0);
+    IUFillNumberVector(&SensorSkyNP, SensorSkyN, 2, getDeviceName(), "SKY_SENSOR", "Sky sensor", ENVIRONMENT_TAB, IP_RO, 60, IPS_IDLE);
+
     serialConnection = new Connection::Serial(this);
     serialConnection->registerHandshake([&]()
     {
@@ -251,6 +259,7 @@ bool IndiAstrolink4USB::updateProperties()
         defineSwitch(&Power3SP);
         defineSwitch(&AutoPWMSP);
         defineNumber(&Sensor2NP);
+        defineNumber(&SensorSkyNP);
         defineNumber(&PWMNP);
         defineNumber(&PowerDataNP);
         defineNumber(&FocuserSettingsNP);
@@ -271,6 +280,7 @@ bool IndiAstrolink4USB::updateProperties()
         deleteProperty(Power3SP.name);
         deleteProperty(AutoPWMSP.name);
         deleteProperty(Sensor2NP.name);
+        deleteProperty(SensorSkyNP.name);
         deleteProperty(PWMNP.name);
         deleteProperty(PowerDataNP.name);
         deleteProperty(FocuserSettingsNP.name);
@@ -511,7 +521,8 @@ bool IndiAstrolink4USB::ISNewSwitch (const char *dev, const char *name, ISState 
             std::string value = "0";
             if(!strcmp(FocuserModeS[FS_MODE_UNI].name, names[0])) value = "0";
             if(!strcmp(FocuserModeS[FS_MODE_BI].name, names[0])) value = "1";
-            if(!strcmp(FocuserModeS[FS_MODE_MICRO].name, names[0])) value = "2";
+            if(!strcmp(FocuserModeS[FS_MODE_MICRO_L].name, names[0])) value = "2";
+            if(!strcmp(FocuserModeS[FS_MODE_MICRO_H].name, names[0])) value = "3";
             if(updateSettings("u", "U", U_STEPPER_MODE, value.c_str()))
         	{
                 FocuserModeSP.s = IPS_BUSY;
@@ -838,10 +849,11 @@ bool IndiAstrolink4USB::sensorRead()
         {
             std::vector<std::string> result = split(res, ":");
             
-            FocuserModeS[FS_MODE_UNI].s = FocuserModeS[FS_MODE_BI].s = FocuserModeS[FS_MODE_MICRO].s = ISS_OFF;
+            FocuserModeS[FS_MODE_UNI].s = FocuserModeS[FS_MODE_BI].s = FocuserModeS[FS_MODE_MICRO_L].s = FocuserModeS[FS_MODE_MICRO_H].s = ISS_OFF;
             if(!strcmp("0", result[U_STEPPER_MODE].c_str())) FocuserModeS[FS_MODE_UNI].s = ISS_ON;
             if(!strcmp("1", result[U_STEPPER_MODE].c_str())) FocuserModeS[FS_MODE_BI].s = ISS_ON;
-            if(!strcmp("2", result[U_STEPPER_MODE].c_str())) FocuserModeS[FS_MODE_MICRO].s = ISS_ON;
+            if(!strcmp("2", result[U_STEPPER_MODE].c_str())) FocuserModeS[FS_MODE_MICRO_L].s = ISS_ON;
+            if(!strcmp("3", result[U_STEPPER_MODE].c_str())) FocuserModeS[FS_MODE_MICRO_H].s = ISS_ON;
             FocuserModeSP.s = IPS_OK;
             IDSetSwitch(&FocuserModeSP, nullptr);
             

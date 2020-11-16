@@ -155,8 +155,19 @@ private:
     ISwitch Power3S[2];
     ISwitchVectorProperty Power3SP;
 
-    INumber Sensor2N[1];
+    INumber Sensor2N[3];
     INumberVectorProperty Sensor2NP;
+    enum
+    {
+      SENS_T, SENS_H, SENS_D
+    };
+
+    INumber SensorSkyN[2];
+    INumberVectorProperty SensorSkyNP;
+    enum
+    {
+        SENSSKY_T, SENSSKY_A
+    };
 
     INumber PWMN[2];
     INumberVectorProperty PWMNP;
@@ -185,11 +196,11 @@ private:
     {
         FS_SPEED, FS_STEP_SIZE, FS_COMPENSATION, FS_COMP_THRESHOLD
     };
-    ISwitch FocuserModeS[5];
+    ISwitch FocuserModeS[4];
     ISwitchVectorProperty FocuserModeSP;
     enum
     {
-      FS_MODE_UNI, FS_MODE_BI, FS_MODE_MICRO
+      FS_MODE_UNI, FS_MODE_BI, FS_MODE_MICRO_L, FS_MODE_MICRO_H
     };
 
     ISwitch FocuserCompModeS[2];
