@@ -1,3 +1,9 @@
 *.o
 *.a
 build
+*.config
+*.creator
+*.user
+*.files
+*.includes
+

@@ -19,7 +19,7 @@ make install
 Then indiserver needs to be started with AstroLink drivers:
 
 ```
-indiserver -v astrolink4usb
+indiserver -v indi_astrolink4usb
 ```
 
 Now AstroLink can be used with any software that supports INDI drivers, like KStars with Ekos.

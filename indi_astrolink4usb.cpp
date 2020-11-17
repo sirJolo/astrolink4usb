@@ -135,7 +135,7 @@ bool IndiAstrolink4USB::initProperties()
     IUFillSwitch(&FocuserModeS[FS_MODE_BI], "FS_MODE_BI", "Bipolar", ISS_OFF);
     IUFillSwitch(&FocuserModeS[FS_MODE_MICRO_L], "FS_MODE_MICRO_L", "Microstep 1/8", ISS_OFF);
     IUFillSwitch(&FocuserModeS[FS_MODE_MICRO_H], "FS_MODE_MICRO_H", "Microstep 1/32", ISS_OFF);
-    IUFillSwitchVector(&FocuserModeSP, FocuserModeS, 3, getDeviceName(), "FOCUSER_MODE", "Focuser mode", SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
+    IUFillSwitchVector(&FocuserModeSP, FocuserModeS, 4, getDeviceName(), "FOCUSER_MODE", "Focuser mode", SETTINGS_TAB, IP_RW, ISR_1OFMANY, 60, IPS_IDLE);
 
     IUFillSwitch(&FocuserCompModeS[FS_COMP_AUTO], "FS_COMP_AUTO", "AUTO", ISS_OFF);
     IUFillSwitch(&FocuserCompModeS[FS_COMP_MANUAL], "FS_COMP_MANUAL", "MANUAL", ISS_ON);
