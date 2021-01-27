@@ -16,8 +16,8 @@
  Boston, MA 02110-1301, USA.
 *******************************************************************************/
 
-#ifndef ASTROLINK4_H
-#define ASTROLINK4_H
+#ifndef ASTROLINK4USB_H
+#define ASTROLINK4USB_H
 
 #include <string>
 #include <iostream>
@@ -218,6 +218,13 @@ private:
     enum
     {
     FS_COMP_AUTO, FS_COMP_MANUAL
+    };
+
+    ISwitch FocuserHoldS[2];
+    ISwitchVectorProperty FocuserHoldSP;
+    enum
+    {
+      FS_HOLD_ON, FS_HOLD_OFF
     };
     
     ISwitch FocuserManualS[2];

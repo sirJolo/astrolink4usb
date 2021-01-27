@@ -20,9 +20,9 @@
 #include "indicom.h"
 
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 2
+#define VERSION_MINOR 3
 
-#define ASTROLINK4_LEN      100
+#define ASTROLINK4_LEN      200
 #define ASTROLINK4_TIMEOUT  3
 
 //////////////////////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ bool IndiAstrolink4USB::Handshake()
     char res[ASTROLINK4_LEN] = {0};
     if(sendCommand("#", res))
     {
-        if(strncmp(res, "#:AstroLink4USB", 15) != 0)
+        if(strncmp(res, "#:AstroLink4", 12) != 0)
         {
             LOG_ERROR("Device not recognized.");
             return false;
@@ -214,26 +214,26 @@ bool IndiAstrolink4USB::initProperties()
     IUFillSwitch(&AutoPWMS[1], "PWMA_B", "B", ISS_OFF);
     IUFillSwitchVector(&AutoPWMSP, AutoPWMS, 2, getDeviceName(), "AUTO_PWM", "Auto PWM", POWER_TAB, IP_RW, ISR_NOFMANY, 60, IPS_OK);
     
-    IUFillNumber(&PowerDataN[POW_VIN],"VIN", "Input voltage", "%.1f", 0, 15, 10, 0);
-    IUFillNumber(&PowerDataN[POW_ITOT],"ITOT", "Total current", "%.1f", 0, 15, 10, 0);
+    IUFillNumber(&PowerDataN[POW_VIN],"VIN", "Input voltage [V]", "%.1f", 0, 15, 10, 0);
+    IUFillNumber(&PowerDataN[POW_ITOT],"ITOT", "Total current [A]", "%.1f", 0, 15, 10, 0);
     IUFillNumber(&PowerDataN[POW_AH],"AH", "Energy consumed [Ah]", "%.1f", 0, 1000, 10, 0);
     IUFillNumber(&PowerDataN[POW_WH],"WH", "Energy consumed [Wh]", "%.1f", 0, 10000, 10, 0);
     IUFillNumberVector(&PowerDataNP, PowerDataN, 4, getDeviceName(), "POWER_DATA", "Power data", POWER_TAB, IP_RO, 60, IPS_IDLE);
     
     // Environment Group
-    addParameter("WEATHER_TEMPERATURE", "Temperature (C)", -15, 35, 15);
-    addParameter("WEATHER_HUMIDITY", "Humidity %", 0, 100, 15);
-    addParameter("WEATHER_DEWPOINT", "Dew Point (C)", 0, 100, 15);
+    addParameter("WEATHER_TEMPERATURE", "Temperature [C]", -15, 35, 15);
+    addParameter("WEATHER_HUMIDITY", "Humidity [%]", 0, 100, 15);
+    addParameter("WEATHER_DEWPOINT", "Dew Point [C]", 0, 100, 15);
     
     // Sensor 2
-    IUFillNumber(&Sensor2N[SENS_T], "TEMP_2", "Temperature (C)", "%.1f", -50, 100, 1, 0);
-    IUFillNumber(&Sensor2N[SENS_H], "HUM_2", "Humidity (%)", "%.1f", -50, 100, 1, 0);
-    IUFillNumber(&Sensor2N[SENS_D], "DEW_2", "Dew point (C)", "%.1f", -50, 100, 1, 0);
+    IUFillNumber(&Sensor2N[SENS_T], "TEMP_2", "Temperature [C]", "%.1f", -50, 100, 1, 0);
+    IUFillNumber(&Sensor2N[SENS_H], "HUM_2", "Humidity [%]", "%.1f", -50, 100, 1, 0);
+    IUFillNumber(&Sensor2N[SENS_D], "DEW_2", "Dew point [C]", "%.1f", -50, 100, 1, 0);
     IUFillNumberVector(&Sensor2NP, Sensor2N, 3, getDeviceName(), "SENSOR_2", "Sensor 2", ENVIRONMENT_TAB, IP_RO, 60, IPS_IDLE);
 
     // Sky Sensor
-    IUFillNumber(&SensorSkyN[SENSSKY_T], "SKY_TEMP", "Sky temperature (C)", "%.1f", -50, 100, 1, 0);
-    IUFillNumber(&SensorSkyN[SENSSKY_A], "SKY_AMB", "Ambient temperature (%)", "%.1f", -50, 100, 1, 0);
+    IUFillNumber(&SensorSkyN[SENSSKY_T], "SKY_TEMP", "Sky temperature [C]", "%.1f", -50, 100, 1, 0);
+    IUFillNumber(&SensorSkyN[SENSSKY_A], "SKY_DIFF", "Temperature difference [C]", "%.1f", -50, 100, 1, 0);
     IUFillNumberVector(&SensorSkyNP, SensorSkyN, 2, getDeviceName(), "SKY_SENSOR", "Sky sensor", ENVIRONMENT_TAB, IP_RO, 60, IPS_IDLE);
 
     serialConnection = new Connection::Serial(this);
@@ -740,8 +740,9 @@ bool IndiAstrolink4USB::sendCommand(const char * cmd, char * res)
         sprintf(command, "%s\n", cmd);
         LOGF_DEBUG("CMD %s", command);
         if ( (tty_rc = tty_write_string(PortFD, command, &nbytes_written)) != TTY_OK)
+        {
             return false;
-
+        }
         if (!res)
         {
             tcflush(PortFD, TCIOFLUSH);
