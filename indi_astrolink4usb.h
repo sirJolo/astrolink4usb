@@ -16,8 +16,8 @@
  Boston, MA 02110-1301, USA.
 *******************************************************************************/
 
-#ifndef ASTROLINK4_H
-#define ASTROLINK4_H
+#ifndef ASTROLINK4USB_H
+#define ASTROLINK4USB_H
 
 #include <string>
 #include <iostream>
