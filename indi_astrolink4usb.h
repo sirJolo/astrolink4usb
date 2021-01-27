@@ -88,6 +88,9 @@
 #define N_OVER_AMP			3
 #define N_OVER_TIME			4
 
+#define Z_CURRENT           1
+#define Z_STOP_CURRENT      2
+
 namespace Connection
 {
 class Serial;
@@ -190,11 +193,11 @@ private:
     ISwitch CompensateNowS[1];
     ISwitchVectorProperty CompensateNowSP;
 
-    INumber FocuserSettingsN[4];
+    INumber FocuserSettingsN[5];
     INumberVectorProperty FocuserSettingsNP;
     enum
     {
-        FS_SPEED, FS_STEP_SIZE, FS_COMPENSATION, FS_COMP_THRESHOLD
+        FS_SPEED, FS_STEP_SIZE, FS_CURRENT, FS_COMPENSATION, FS_COMP_THRESHOLD
     };
     ISwitch FocuserModeS[4];
     ISwitchVectorProperty FocuserModeSP;
@@ -208,6 +211,13 @@ private:
     enum
     {
     FS_COMP_AUTO, FS_COMP_MANUAL
+    };
+
+    ISwitch FocuserHoldS[2];
+    ISwitchVectorProperty FocuserHoldSP;
+    enum
+    {
+      FS_HOLD_ON, FS_HOLD_OFF
     };
     
     ISwitch FocuserManualS[2];
