@@ -219,13 +219,6 @@ private:
     {
     FS_COMP_AUTO, FS_COMP_MANUAL
     };
-
-    ISwitch FocuserHoldS[2];
-    ISwitchVectorProperty FocuserHoldSP;
-    enum
-    {
-      FS_HOLD_ON, FS_HOLD_OFF
-    };
     
     ISwitch FocuserManualS[2];
     ISwitchVectorProperty FocuserManualSP;
