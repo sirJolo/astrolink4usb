@@ -11,9 +11,9 @@ git clone https://github.com/astrojolo/astrolink4usb.git
 cd astrolink4usb
 mkdir build
 cd build
-cmake ..
-make
-make install
+cmake ~cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug ~/astrolink4usb 
+make -j4
+sudo make install
 ```
 
 Then indiserver needs to be started with AstroLink drivers:
